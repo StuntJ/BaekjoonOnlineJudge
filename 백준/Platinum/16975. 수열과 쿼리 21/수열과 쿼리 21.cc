@@ -3,96 +3,71 @@
 using namespace std;
 typedef long long ll;
 
-struct RSQ
+struct FenwickTree
 {
-    int n;
-    vector<ll> rangeSum;
+	vector<ll> tree;
+	FenwickTree(ll n) : tree(n + 1) {}
+	ll sum(ll pos) 
+	{
+		pos++;
+		ll ret = 0;
+		while (pos > 0)
+		{
+			ret += tree[pos];
+			pos &= (pos - 1);
+		}
+		return ret;
+	}
 
-    RSQ(const vector<ll> &array)
-    {
-        n = array.size();
-        rangeSum.resize(n*4);
-        init(array,1,0,n-1);
-    }
+	void add(ll pos, ll val)
+	{
+		pos++;
+		while (pos < tree.size())
+		{
+			tree[pos] += val;
+			pos += (pos & -pos);
+		}
+	}
 
-    ll init(const vector<ll> &array, int node, int nodeLeft, int nodeRight)
-    {
-        if(nodeLeft==nodeRight)
-        {
-            if(nodeLeft==0) return rangeSum[node] = array[nodeLeft];
-            else return rangeSum[node] = array[nodeLeft] - array[nodeLeft-1];
-        }
-        int mid = (nodeLeft+nodeRight)/2;
-        ll leftSum = init(array,node*2,nodeLeft,mid);
-        ll rightSum = init(array,node*2+1,mid+1,nodeRight);
-        return rangeSum[node] = leftSum+rightSum;
-    }
+	void update(ll left, ll right, ll val)
+	{
+		add(left, val); //B[L] + val
+		if (right < tree.size() - 2) add(right + 1, -val); //B[R+1] - val
+	}
 
-    ll inQuery(int left, int right, int node, int nodeLeft, int nodeRight)
-    {
-        if(nodeRight<left || right<nodeLeft) return 0;
-        if(left<=nodeLeft&&nodeRight<=right) return rangeSum[node];
-        int mid = (nodeLeft+nodeRight)/2;
-        return inQuery(left,right,node*2,nodeLeft,mid) + inQuery(left,right,node*2+1,mid+1,nodeRight);
-    }
-
-    ll query(int x)
-    {
-        return inQuery(0,x,1,0,n-1);
-    }
-
-    ll inUpdate(int idx, ll val, int node, int nodeLeft, int nodeRight)
-    {
-        if(idx<nodeLeft || nodeRight<idx) return rangeSum[node];
-        if(nodeLeft==nodeRight) return rangeSum[node] += val;
-        int mid = (nodeLeft+nodeRight)/2;
-        ll leftSum = inUpdate(idx,val,node*2,nodeLeft,mid);
-        ll rightSum = inUpdate(idx,val,node*2+1,mid+1,nodeRight);
-        return rangeSum[node] = leftSum+rightSum;
-    }
-
-    void update(int left, int right, ll val)
-    {
-        inUpdate(left,val,1,0,n-1);
-        if(right<n-1) inUpdate(right+1,-val,1,0,n-1);
-    }
 };
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-    int N;
-    cin>>N;
+	ll N;
+	cin >> N;
+	vector<ll> arr(N);
+	for (auto& i : arr) cin >> i;
 
-    vector<ll> A(N);
+	FenwickTree seg(N);
+	for (ll i = 0; i < N; i++)
+		seg.update(i, i, arr[i]);
 
-    for(int i=0;i<N;i++)
-        cin>>A[i];
-
-    RSQ segTree(A);
-
-    int M;
-    cin>>M;
-
-    while(M--)
-    {
-        int order;
-        cin>>order;
-        if(order==1)
-        {
-            int i,j;
-            ll k;
-            cin>>i>>j>>k;
-            segTree.update(i-1,j-1,k);
-        }
-        else
-        {
-            int x;
-            cin>>x;
-            cout<<segTree.query(x-1)<<'\n';
-        }
-    }
+	ll M;
+	cin >> M;
+	while (M--)
+	{
+		int q;
+		cin >> q;
+		if(q==1)
+		{
+			int i, j, k;
+			cin >> i >> j >> k;
+			seg.update(i - 1, j - 1, k);
+		}
+		else
+		{
+			int x;
+			cin >> x;
+			cout << seg.sum(x - 1) << '\n';
+		}
+	}
 }
