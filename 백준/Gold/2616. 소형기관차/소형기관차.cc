@@ -7,28 +7,28 @@ int main()
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	int N;
+	int N, M;
+	int sum = 0;
 	cin >> N;
-
-	vector<int> pSum(N + 1, 0);
-	for (int i = 1; i <= N; i++)
-	{
-		int x;
-		cin >> x;
-		pSum[i] = pSum[i - 1] + x;
-	}
-
-	vector<vector<int>> dp(N + 1, vector<int>(4, 0));
-	int M;
+	vector<int> v(N + 1);
+	for (int i = 1; i <= N; i++) cin >> v[i];
 	cin >> M;
 
-	for (int i = 1; i <= N; i++)
+	for (int i = N; i > N - M; i--)
+		sum += v[i];
+
+	vector<int> dp(N + 1, 0);
+	for (int i = 1; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		int k = sum;
+		for (int j = N; j >= (i * M); j--)
 		{
-			if (i - M >= 0 && j > 0) dp[i][j] = dp[i - M][j - 1] + pSum[i] - pSum[i - M];
-			dp[i][j] = max(dp[i][j], dp[i - 1][j]);
+			dp[j] = dp[j - M] + k;
+			k -= v[j];
+			k += v[j - M];
 		}
+		for (int j = (i * M) + 1; j <=N ; j++)
+			dp[j] = max(dp[j], dp[j - 1]);
 	}
-	cout << dp[N][3];
+	cout << dp[N];
 }
