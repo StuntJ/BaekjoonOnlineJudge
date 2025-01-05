@@ -10,12 +10,12 @@ int main()
 	int N;
 	cin >> N;
 
-	vector<int> v(N + 1);
 	vector<int> pSum(N + 1, 0);
 	for (int i = 1; i <= N; i++)
 	{
-		cin >> v[i];
-		pSum[i] = pSum[i - 1] + v[i];
+		int x;
+		cin >> x;
+		pSum[i] = pSum[i - 1] + x;
 	}
 
 	vector<vector<int>> dp(N + 1, vector<int>(4, 0));
