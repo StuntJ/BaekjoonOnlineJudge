@@ -59,7 +59,6 @@ void make_bcc()
 bool isOdd;
 int maximumCounter;
 vector<int> point;
-vector<int> finished;
 void dfs(int bccCounter, int src, int parent = -1)
 {
 	point.emplace_back(src);
@@ -68,7 +67,7 @@ void dfs(int bccCounter, int src, int parent = -1)
 		if (there == parent) continue;
 		if (bccRes[there].find(bccCounter) != bccRes[there].end())
 		{
-			if (discovered[there] > vertexCounter && finished[there] < bccCounter)
+			if (discovered[there] > vertexCounter)
 			{
 				if ((discovered[src] - discovered[there]) % 2 == 0)
 					isOdd = true;
@@ -81,7 +80,6 @@ void dfs(int bccCounter, int src, int parent = -1)
 			}
 		}
 	}
-	finished[src] = bccCounter;
 }
 
 int main()
@@ -111,7 +109,6 @@ int main()
 
 		vertexCounter = -1;
 		discovered = vector<int>(V + 1, -1);
-		finished = vector<int>(V + 1, -1);
 		for (int i = 0; i < bccCounter; i++)
 		{
 			point.clear();
