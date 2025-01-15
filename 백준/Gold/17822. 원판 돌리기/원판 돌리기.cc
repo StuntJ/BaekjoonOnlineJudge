@@ -60,8 +60,6 @@ int main()
 			}
 		}
 
-		
-
 		if (!flag)
 		{
 			int sum = 0;
@@ -75,7 +73,6 @@ int main()
 				}
 			}
 			if (cnt == 0) continue;
-			/*cout << sum << ' ' << cnt << '\n';*/
 			double res = sum / (double)cnt;
 
 			for (int i = 0; i < N; i++)
@@ -90,13 +87,6 @@ int main()
 				}
 			}
 		}
-
-		/*for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < M; j++)
-				cout << board[i][j] << ' ';
-			cout << '\n';
-		}*/
 	}
 	int sum = 0;
 	for (int i = 0; i < N; i++)
