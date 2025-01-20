@@ -35,7 +35,7 @@ int main()
 	const int nd = V;
 	adj.resize(V + 1);
 	dp.assign(V + 1, vector<int>(K + 1, INF));
-	
+
 	for (int i = 0; i < E; i++)
 	{
 		int s, d, l, t;
@@ -57,14 +57,19 @@ int main()
 			int nextCost = here.cost - next.cost;
 			if (nextCost < 0) continue;
 			int nextDist = here.dist + next.dist;
+
 			if (nextDist < dp[next.next][nextCost])
 			{
-				dp[next.next][nextCost] = nextDist;
 				pq.push({ next.next,nextDist,nextCost });
+				for (int i = nextCost; i>=0; i--)
+				{
+					if (dp[next.next][i] <= nextDist) break;
+					dp[next.next][i] = nextDist;
+				}
 			}
 		}
 	}
-	int ans = *min_element(dp[nd].begin(),dp[nd].end());
+	int ans = *min_element(dp[nd].begin(), dp[nd].end());
 	if (ans == INF) cout << -1;
 	else cout << ans;
 }
