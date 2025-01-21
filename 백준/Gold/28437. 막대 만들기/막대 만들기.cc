@@ -5,7 +5,6 @@ using namespace std;
 typedef long long ll;
 
 int dp[MAX_N];
-bool chk[MAX_N];
 
 int main()
 {
@@ -18,18 +17,15 @@ int main()
     {
         int x;
         cin >> x;
-        chk[x] = true;
+        dp[x] = 1;
     }
     int M;
     cin >> M;
     vector<int> B(M);
     for (auto& i : B) cin >> i;
 
-    if (chk[1]) dp[1] = 1;
-    else dp[1] = 0;
     for (int i = 2; i < MAX_N; i++)
     {
-        if (chk[i]) dp[i]++;
         for (int j = 1; j * j <= i; j++)
         {
             if(i%j==0)
