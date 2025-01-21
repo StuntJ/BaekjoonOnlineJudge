@@ -24,20 +24,10 @@ int main()
     vector<int> B(M);
     for (auto& i : B) cin >> i;
 
-    for (int i = 2; i < MAX_N; i++)
+    for (int i = 1; i < MAX_N; i++)
     {
-        for (int j = 1; j * j <= i; j++)
-        {
-            if(i%j==0)
-            {
-                if (j * j == i) dp[i] += dp[j];
-                else
-                {
-                    dp[i] += dp[j];
-                    if (i / j != i) dp[i] += dp[i / j];
-                }
-            }
-        }
+        for (int j = 2; i * j < MAX_N; j++)
+            dp[i * j] += dp[i];
     }
 
     for (auto i : B) cout << dp[i] << ' ';
