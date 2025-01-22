@@ -11,7 +11,7 @@ int adj[5][5] = {
 	INF,3,4,3,1
 };
 
-long long dp[5][5][100001];
+long long dp[5][5][2];
 
 int main()
 {
@@ -21,10 +21,10 @@ int main()
 	int N = 0;
 	for (int i = 0; i < 5; i++)
 		for (int j = 0; j < 5; j++)
-			for (int k = 0; k < 100001; k++)
+			for (int k = 0; k < 2; k++)
 				dp[i][j][k] = INF;
-		
-	
+
+
 	dp[0][0][0] = 0;
 	while (true)
 	{
@@ -38,29 +38,28 @@ int main()
 			if (i == x) continue;
 			for (int j = 0; j < 5; j++)
 			{
-				dp[x][i][N] = min(dp[x][i][N],min(dp[j][i][N - 1] + adj[j][x], dp[x][j][N-1] + adj[j][i]));
+				dp[x][i][N % 2] = min(dp[x][i][N % 2], min(dp[j][i][(N + 1) % 2] + adj[j][x], dp[x][j][(N+1)%2] + adj[j][i]));
 			}
 			for (int j = 0; j < 5; j++)
 			{
-				dp[i][x][N] = min(dp[i][x][N],min(dp[j][x][N - 1] + adj[j][i], dp[i][j][N - 1] + adj[j][x]));
+				dp[i][x][N % 2] = min(dp[i][x][N % 2], min(dp[j][x][(N + 1) % 2] + adj[j][i], dp[i][j][(N + 1) % 2] + adj[j][x]));
 			}
 		}
-		/*for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			for (int j = 0; j < 5; j++)
 			{
-				cout << dp[i][j][N] << ' ';
+				dp[i][j][(N + 1) % 2] = INF;
 			}
-			cout << '\n';
 		}
-		cout << '\n';*/
 	}
+
 	long long m = INF;
 	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 5; j++)
 		{
-			m = min(m,dp[i][j][N]);
+			m = min(m, dp[i][j][N%2]);
 		}
 	}
 
