@@ -11,39 +11,35 @@ int main()
 	int N;
 	cin >> N;
 
-	vector<ll> v(N);
-	for (auto& i : v) cin >> i;
-	v.insert(v.begin(), 0);
-
 	vector<pair<ll,ll>> pSum(N + 1,{0,0});
 	for (int i = 1; i <= N; i++)
 	{
-		pSum[i].first = pSum[i - 1].first + v[i];
+		int x;
+		cin >> x;
+		pSum[i].first = pSum[i - 1].first + x;
 		pSum[i].second = i;
 	}
 
 	sort(pSum.begin(), pSum.end());
 
 	ll ans = numeric_limits<ll>::max();
-	ll pr;
 	ll l, r;
 	for (int i = 1; i <= N; i++)
 	{
 		ll diff = pSum[i].first - pSum[i - 1].first;
-		if (diff <= ans)
+		if (diff <= abs(ans))
 		{
-			ans = diff;
 			l = pSum[i - 1].second;
 			r = pSum[i].second;
 			if (l > r)
 			{
 				swap(l, r);
-				pr = -ans;
+				ans = -diff;
 			}
-			else pr = ans;
+			else ans = diff;
 			l++;
 		}
 	}
-	cout << pr << '\n';
+	cout << ans << '\n';
 	cout << l << ' ' << r;
 }
