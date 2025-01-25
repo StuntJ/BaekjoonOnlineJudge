@@ -6,6 +6,12 @@ struct v_data
 {
 	int h;
 	int s;
+
+	bool operator < (const v_data& rhs) const
+	{
+		if (s == rhs.s) return h > rhs.h;
+		return s > rhs.s;
+	}
 };
 
 int main()
@@ -16,23 +22,23 @@ int main()
 	int H, N;
 	cin >> H >> N;
 
-	vector<int> dp(H + 1, 0);
+	vector<int> dp(H + 1, false);
 	vector<v_data> v(N);
 	for (int i = 0; i < N; i++) cin >> v[i].h >> v[i].s;
+	sort(v.begin(), v.end());
 	v.insert(v.begin(), { 0,0 });
+	dp[0] = true;
 
 	for (int i = 1; i <= N; i++)
 	{
-		for (int j = H; j >=0 ; j--)
+		for (int j = H; j >=v[i].h ; j--)
 		{
-			int res = dp[j];
-			if (j - v[i].h >= 0)
-			{
-				if (dp[j - v[i].h] == 0 && j - v[i].h == 0) res = max(res, v[i].s);
-				else res = max(res, min(dp[j - v[i].h], v[i].s));
-			}
-			dp[j] = res;
+			dp[j] = max(dp[j], dp[j - v[i].h]);
+		}
+		if (dp[H])
+		{
+			cout << v[i].s;
+			return 0;
 		}
 	}
-	cout << dp[H];
 }
