@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
 #define INF 1000000000
+#define MAX_N 1000001
 using namespace std;
 typedef long long ll;
+
+ll arr[MAX_N];
 
 int main()
 {
@@ -11,18 +14,19 @@ int main()
 	ll N, K;
 	cin >> N >> K;
 
-	unordered_map<ll, ll> mp;
-
 	ll st = INF, nd = 0;
 	for (int i = 0; i < N; i++)
 	{
 		ll s, e;
 		cin >> s >> e;
-		mp[s + 1]++;
-		mp[e + 1]--;
+		arr[s+1]++;
+		arr[e+1]--;
 		st = min(st, s);
 		nd = max(nd, e);
 	}
+
+	for (int i = 1; i < MAX_N; i++)
+		arr[i] += arr[i - 1];
 
 	ll ds = 0; ll de = 0;
 	ll s = 0, e = st;
@@ -32,16 +36,14 @@ int main()
 		while (sum > K && s < e)
 		{
 			s++;
-			ds -= mp[s];
-			sum += ds;
+			sum -= arr[s];
 		}
 		if (sum == K)
 		{
 			cout << s << ' ' << e << '\n';
 			return 0;
 		}
-		de += mp[e+1];
-		sum += de;
+		sum += arr[e + 1];
 	}
 	cout << 0 << ' ' << 0 << '\n';
 }
