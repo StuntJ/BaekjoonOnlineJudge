@@ -3,11 +3,6 @@
 using namespace std;
 typedef long long ll;
 
-ll cal(ll n)
-{
-	return (3 * n * n + 3 * n) / 2;
-}
-
 int main()
 {
 	ios::sync_with_stdio(0);
@@ -19,25 +14,29 @@ int main()
 	{
 		ll N;
 		cin >> N;
-		ll k = 1;
-		while (N > cal(k))
-			k++;
-		N -= cal(k-1);
-		if (N > 2 * k)
+
+		ll n = 0;
+		ll s = 0, e = 100000;
+		ll nextN = numeric_limits<int>::max();
+		while (s <= e)
 		{
-			cout << "splash\n";
+			ll mid = (s + e) / 2;
+			ll res = (3 * mid * mid + 3 * mid) / 2;
+			if (res < N)
+			{
+				n = max(n, mid);
+				nextN = min(nextN, N - res);
+				s = mid + 1;
+			}
+			else e = mid - 1;
 		}
-		else if (N > k)
-		{
-			cout << k << ' ' << "jump";
-			if (k > 2) cout << "s";
-			cout << '\n';
-		}
+		n++;
+		N = nextN;
+		if (N <= n)
+			cout << n << (n == 1 ? " dolphin\n" : " dolphins\n");
+		else if (N <= 2 * n)
+			cout << n << (n == 1 ? " jump\n" : " jumps\n");
 		else
-		{
-			cout << k << ' ' << "dolphin";
-			if (k > 1) cout << "s";
-			cout << '\n';
-		}
+			cout << "splash\n";
 	}
 }
