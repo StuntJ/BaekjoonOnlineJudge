@@ -20,30 +20,28 @@ typedef vector<long double> vld;
 typedef vector<vld> vvld;
 typedef vector<vvld> vvvld;
 
-ll dp[50001][5];
+ll dp[50001];
 const ll INF = 1000000000;
-
-ll dfs(ll x, ll depth =0)
-{
-    if (depth > 4) return INF;
-    ll& ret = dp[x][depth];
-    if (ret != 0) return ret;
-    ret = INF;
-    for (ll i = 1; i * i <= x; i++)
-    {
-        if (i * i == x) return ret = 1;
-        ret = min(ret, dfs(x-i*i,depth+1));
-    }
-    ret++;
-    return ret;
-}
 
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
+    fill(dp, dp + 50001, INF);
+    for (int i = 1; i < 50001; i++)
+    {
+        for (int j = 1; j * j <= i; j++)
+        {
+            if (j * j == i)
+            {
+                dp[i] = 1;
+                break;
+            }
+            dp[i] = min(dp[i - j * j] + 1, dp[i]);
+        }
+    }
 
     ll N;
     cin >> N;
-    cout << dfs(N);
+    cout << dp[N];
 }
