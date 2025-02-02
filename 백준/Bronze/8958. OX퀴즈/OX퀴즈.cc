@@ -17,20 +17,8 @@ int main()
 
         int cnt = 0;
         int total = 0;
-        for (int i = 0; i < str.size(); i++)
-        {
-            if (str[i] == 'O') 
-            {
-                total += cnt;
-                cnt++;
-            }
-            else
-            {
-                total += cnt;
-                cnt = 0;
-            }
-        }
-        total += cnt;
+        for (int i = 0; i < str.size(); i++) (str[i] == 'O') ? total += ++cnt : cnt = 0;
+
         cout << total << '\n';
     }
 
