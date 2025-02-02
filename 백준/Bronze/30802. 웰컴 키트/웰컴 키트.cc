@@ -28,9 +28,7 @@ int main()
     int tnum = 0;
     for (auto i : v)
     {
-        int hereNum = i / T + 1;
-        if (i % T==0) hereNum--;
-        tnum += hereNum;
+        tnum += i / T + (i % T != 0);
     }
 
     int pnum = N / P;
