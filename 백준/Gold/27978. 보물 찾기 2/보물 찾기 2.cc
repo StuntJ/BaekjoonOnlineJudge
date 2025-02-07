@@ -8,16 +8,10 @@ int dx[8] = { 0,0,1,-1,1,1,-1,-1 };
 int dy[8] = { 1,-1,0,0,1,-1,1,-1 };
 vector<vector<char>> grid;
 
-struct pq_data
+struct dq_data
 {
-	int dist;
 	int x;
 	int y;
-
-	bool operator < (const pq_data& rhs) const
-	{
-		return dist > rhs.dist;
-	}
 };
 
 bool isInrange(int x, int y)
@@ -25,35 +19,35 @@ bool isInrange(int x, int y)
 	return 0 <= x && x < H && 0 <= y && y < W;
 }
 
-vector<vector<int>> dijkstra(int stx, int sty)
+int zeroOnebfs(int stx, int sty, int ndx, int ndy)
 {
-	vector<vector<int>> dist(H, vector<int>(W, INF));
-	dist[stx][sty] = 0;
-	priority_queue<pq_data> pq;
-	pq.push({ 0,stx,sty });
-	
-	while (!pq.empty())
-	{
-		pq_data here = pq.top(); pq.pop();
+	vector<vector<int>> distance(H, vector<int>(W,INF)); 
+	distance[stx][sty] = 0;
+	deque<dq_data> dq;
+	dq.push_back({stx,sty });
 
-		if (here.dist > dist[here.x][here.y]) continue;
+	while (!dq.empty())
+	{
+		dq_data here = dq.front(); dq.pop_front();
+
+		if (here.x == ndx && here.y == ndy)
+		{
+			return distance[here.x][here.y];
+		}
 
 		for (int i = 0; i < 8; i++)
 		{
 			int nx = here.x + dx[i];
 			int ny = here.y + dy[i];
-			int nextDist = here.dist + (dy[i] != 1);
 
-			if (!isInrange(nx, ny) || grid[nx][ny] == '#') continue;
+			if (!isInrange(nx, ny) || distance[nx][ny]<=distance[here.x][here.y] + (dy[i] != 1) || grid[nx][ny] == '#') continue;
 
-			if (dist[nx][ny] > nextDist)
-			{
-				dist[nx][ny] = nextDist;
-				pq.push({ nextDist,nx,ny });
-			}
+			distance[nx][ny] = distance[here.x][here.y] + (dy[i] != 1);
+			if (dy[i] == 1) dq.push_front({nx,ny});
+			else dq.push_back({nx,ny});
 		}
 	}
-	return dist;
+	return -1;
 }
 
 int main()
@@ -76,8 +70,6 @@ int main()
 		}
 	}
 
-	vector<vector<int>> dist = dijkstra(stx, sty);
-
-	if (dist[ndx][ndy] >= INF) cout << -1 << '\n';
-	else cout << dist[ndx][ndy] << '\n';
+	int ans = zeroOnebfs(stx, sty, ndx, ndy);
+	cout << ans << '\n';
 }
