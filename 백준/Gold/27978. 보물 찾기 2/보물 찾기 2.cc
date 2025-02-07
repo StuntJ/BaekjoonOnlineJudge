@@ -29,20 +29,18 @@ int zeroOnebfs(int stx, int sty, int ndx, int ndy)
 	while (!dq.empty())
 	{
 		dq_data here = dq.front(); dq.pop_front();
-
-		if (here.x == ndx && here.y == ndy)
-		{
-			return distance[here.x][here.y];
-		}
+		
+		int hereDist = distance[here.x][here.y];
+		if (here.x == ndx && here.y == ndy) return hereDist;
 
 		for (int i = 0; i < 8; i++)
 		{
 			int nx = here.x + dx[i];
 			int ny = here.y + dy[i];
 
-			if (!isInrange(nx, ny) || distance[nx][ny]<=distance[here.x][here.y] + (dy[i] != 1) || grid[nx][ny] == '#') continue;
+			if (!isInrange(nx, ny) || distance[nx][ny]<=hereDist + (dy[i] != 1) || grid[nx][ny] == '#') continue;
 
-			distance[nx][ny] = distance[here.x][here.y] + (dy[i] != 1);
+			distance[nx][ny] = hereDist + (dy[i] != 1);
 			if (dy[i] == 1) dq.push_front({nx,ny});
 			else dq.push_back({nx,ny});
 		}
