@@ -35,7 +35,7 @@ int main()
     cin >> N;
     vi cnt(N);
 
-    map<int,int> us;
+    unordered_map<int,int> us;
     vi v(N);
     for (int i = 0; i < N; i++)
     {
