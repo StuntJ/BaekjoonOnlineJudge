@@ -37,58 +37,37 @@ int main()
     {
         int N;
         cin >> N;
-
-        vb visited(N + 1);
         vvi adj(N + 1);
-        vb notfin(N + 1);
+        vi inDegree(N + 1);
+
         for (int i = 1; i <= N; i++)
         {
             int x;
             cin >> x;
-
             adj[i].push_back(x);
+            inDegree[x]++;
         }
 
-        stack<int> st;
-        vb chk(N + 1);
+        queue<int> q;
+        for (int i = 1; i <= N; i++)
+        {
+            if (inDegree[i] == 0) q.push(i);
+        }
 
-        auto dfs = [&](auto& dfs, int here)->void
-            {
-                notfin[here] = true;
-                visited[here] = true;
-                st.push(here);
+    
+        while (!q.empty())
+        {
+            int here = q.front(); q.pop();
 
-                for (auto next : adj[here])
-                {
-                    if (notfin[next])
-                    {
-                        while (true)
-                        {
-                            int k = st.top(); st.pop();
-                            chk[k] = true;
-                            if (k == next) break;
-                        }
-                    }
-                    if (!visited[next])
-                        dfs(dfs, next);
-                }
+            for (auto next : adj[here])
+                if (--inDegree[next] == 0) q.push(next);
+        }
 
-                notfin[here] = false;
-            };
-
-        auto dfs_all = [&]()->void
-            {
-                for (int i = 1; i <= N; i++)
-                {
-                    if (!visited[i])
-                        dfs(dfs, i);
-                }
-            };
-
-        dfs_all();
         int cnt = 0;
         for (int i = 1; i <= N; i++)
-            if (!chk[i]) cnt++;
+        {
+            if (inDegree[i] == 0) cnt++;
+        }
         cout << cnt << '\n';
     }
 }
