@@ -28,8 +28,8 @@ typedef vector<vvc> vvvc;
 
 struct disjoint_set
 {
-	vector<int> parent, rank; //어느 집합에 속하는 지 저장할 배열과, 집합의 깊이가 얼마나 깊은지 나타내는 rank
-	disjoint_set(int n) : parent(n), rank(n, 1) //0 ~ n-1 의 정점에 대한 집합. 초기 rank는 모두 1이다.
+	vector<int> parent; //어느 집합에 속하는 지 저장할 배열과, 집합의 깊이가 얼마나 깊은지 나타내는 rank
+	disjoint_set(int n) : parent(n)//0 ~ n-1 의 정점에 대한 집합. 초기 rank는 모두 1이다.
 	{
 		for (int i = 0; i < n; i++) //parent가 모두 자기 자신을 가르키게 놓는다.
 			parent[i] = i;
@@ -47,7 +47,6 @@ struct disjoint_set
 		if (u == v) return false; //u와 v의 조상이 같다면 같은 집합에 속하므로 합칠 수 없다. false를 리턴한다.
 		if (u < v) swap(u, v);
 		parent[u] = v; //u의 조상을 v로 만든다.
-		//if (rank[u] == rank[v]) rank[v]++; //u와 v의 깊이가 같다면 u를 v에 직접 붙였으므로 rank[v] 가 1 늘어난다.
 		return true; //u와 v를 같은 집합에 속하게 하는데에 성공하였다. true를 리턴한다.
 	}
 };
