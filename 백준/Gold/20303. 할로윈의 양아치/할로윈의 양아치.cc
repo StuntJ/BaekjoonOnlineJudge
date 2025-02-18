@@ -26,6 +26,32 @@ typedef vector<char> vc;
 typedef vector<vc> vvc;
 typedef vector<vvc> vvvc;
 
+struct disjoint_set
+{
+    vector<int> parent, count, total;
+    disjoint_set(int n) : parent(n), count(n, 1), total(n)
+    {
+        for (int i = 0; i < n; i++)
+            parent[i] = i;
+    }
+
+    int find(int u) //정점이 어느 집합에 속하는지 알려주는 함수이다.
+    {
+        if (u == parent[u]) return u;
+        return parent[u] = find(parent[u]);
+    }
+
+    bool merge(int u, int v) //u와 v를 같은 집합에 속하게 하는 함수이다.
+    {
+        u = find(u); v = find(v);
+        if (u == v) return false;
+        parent[u] = v;
+        count[v] += count[u];
+        total[v] += total[u];
+        return true;
+    }
+};
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -34,47 +60,25 @@ int main()
     int N, M, K;
     cin >> N >> M >> K;
 
-    vi v(N + 1);
-    for (int i = 1; i <= N; i++)
-        cin >> v[i];
+    disjoint_set ds(N + 1);
 
-    vvi adj(N + 1);
+    for (int i = 1; i <= N; i++)
+        cin >> ds.total[i];
+
+    
     for (int i = 0; i < M; i++)
     {
         int a, b;
         cin >> a >> b;
 
-        adj[a].emplace_back(b);
-        adj[b].emplace_back(a);
+        ds.merge(a, b);
     }
-
-    vb visited(N + 1);
-    auto dfs = [&](auto& dfs, int here)->pi
-        {
-            visited[here] = true;
-            int ret = 1;
-            int tot = v[here];
-
-            for (auto next : adj[here])
-            {
-                if (!visited[next])
-                {
-                    pi r = dfs(dfs, next);
-                    ret += r.first;
-                    tot += r.second;
-                }
-            }
-            return { ret,tot };
-        };
 
     vpi data;
     data.push_back({ 0,0 });
     for (int i = 1; i <= N; i++)
     {
-        if (!visited[i])
-        {
-            data.push_back(dfs(dfs, i));
-        }
+        if (ds.find(i) == i) data.emplace_back(make_pair(ds.count[i], ds.total[i]));
     }
 
     int lim = data.size();
@@ -83,9 +87,9 @@ int main()
     vi dp(K);
     for (int i = 1; i < lim; i++)
     {
-        for (int j = K-1; j >= 0; j--)
+        for (int j = K - 1; j >= 0; j--)
         {
-            if(j-data[i].first>=0) dp[j] = max(dp[j - data[i].first] + data[i].second, dp[j]);
+            if (j - data[i].first >= 0) dp[j] = max(dp[j - data[i].first] + data[i].second, dp[j]);
         }
     }
     cout << *max_element(dp.begin(), dp.end());
