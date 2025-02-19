@@ -1,165 +1,107 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <limits>
-#define ROOT 1
+#include <bits/stdc++.h>
 
 using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<vector<int>> vvi;
+typedef vector<vector<vector<int>>> vvvi;
+typedef vector<ll> vll;
+typedef vector<vector<ll>> vvll;
+typedef vector<vector<vector<ll>>> vvvll;
+typedef pair<int, int> pi;
+typedef pair<ll, ll> pl;
+typedef vector<pi> vpi;
+typedef vector<vector<pi>> vvpi;
+typedef vector<vector<vector<pi>>> vvvpi;
+typedef vector<double> vd;
+typedef vector<vd> vvd;
+typedef vector<vvd> vvvd;
+typedef vector<long double> vld;
+typedef vector<vld> vvld;
+typedef vector<vvld> vvvld;
+typedef vector<bool> vb;
+typedef vector<vector<bool>> vvb;
+typedef vector<vector<vector<bool>>> vvvb;
+typedef vector<char> vc;
+typedef vector<vc> vvc;
+typedef vector<vvc> vvvc;
 
-typedef struct RMQ
-{
-    int n;
-    vector<int> rangeMin;
-
-    RMQ(const vector<int> &array)
-    {
-        n = array.size();
-        rangeMin.resize(n*4);
-        init(array,0,n-1,1);
-    }
-
-    int init(const vector<int> &array,int left,int right,int node)
-    {
-        if(left==right) return rangeMin[node] = array[left];
-        int mid = (left+right)/2;
-        int leftMin = init(array,left,mid,node*2);
-        int rightMin = init(array,mid+1,right,node*2+1);
-        return rangeMin[node] = min(leftMin,rightMin);
-    }
-
-    int MAX_INT = numeric_limits<int>::max();
-    int query(int left,int right,int node,int nodeLeft,int nodeRight)
-    {
-        if(right<nodeLeft||nodeRight<left) return MAX_INT;
-        if(left<=nodeLeft&&nodeRight<=right) return rangeMin[node];
-        int mid = (nodeLeft+nodeRight)/2;
-        return min(query(left,right,node*2,nodeLeft,mid),query(left,right,node*2+1,mid+1,nodeRight));
-    }
-
-    int query(int left,int right)
-    {
-        return query(left,right,1,0,n-1);
-    }
-};
-
-int N;
-vector<int> inDegree;
+const int lim = (int)floor(log2(100000));
+vector<vector<int>> dp;
 vector<vector<int>> tree;
-queue<pair<int,int>> q;
-vector<int> segmentArray;
-vector<int> convertToOriginal;
-vector<int> convertToNewIndex;
-vector<int> locInTrip;
-int vertexCount = 1;
+vector<int> depth;
+vector<bool> visited;
 
-void traverse(int here)
+void dfs(int here, int d)
 {
-    convertToNewIndex[here] = vertexCount;
-    convertToOriginal[vertexCount] = here;
-    vertexCount++;
-
-    locInTrip[convertToNewIndex[here]] = segmentArray.size();
-    segmentArray.emplace_back(convertToNewIndex[here]);
-    for(int i=0;i<tree[here].size();i++)
+    visited[here] = true;
+    depth[here] = d;
+    for (auto next : tree[here])
     {
-        int there = tree[here][i];
-        traverse(there);
-        segmentArray.emplace_back(convertToNewIndex[here]);
+        if (!visited[next])
+        {
+            dp[0][next] = here;
+            dfs(next, d + 1);
+        }
     }
 }
 
-void init()
+void makeTable(int N)
 {
-    convertToNewIndex.resize(N+1);
-    convertToOriginal.resize(N+1);
-    locInTrip.resize(N+1);
+    for (int i = 1; i <= lim; i++)
+        for (int j = 1; j <= N; j++)
+            dp[i][j] = dp[i - 1][dp[i - 1][j]];
+}
+
+int lca(int u, int v)
+{
+    if (depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+    for (int i = 0; diff>0 ; i++) //1. 두 노드의 깊이를 같게 만든다. 
+    {
+        if (diff & 1) u = dp[i][u];
+        diff >>= 1;
+    }
+    if (u == v) return u; //예외) v가 u의 조상이면 당장 return u;
+
+    for (int i = lim; i >= 0; i--)
+    {
+        if (dp[i][u] != dp[i][v]) u = dp[i][u], v = dp[i][v];
+    }
+    return dp[0][u];
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-    cin>>N;
-    inDegree.assign(N+1,0);
-    tree.resize(N+1);
+    int N;
+    cin >> N;
+    dp = vector<vector<int>>(lim+1, vector<int>(N + 1));
+    visited = vector<bool>(N + 1);
+    depth = vector<int>(N + 1);
+    tree = vector<vector<int>>(N+1);
 
-    for(int i=0;i<N-1;i++)
+    for (int i = 0; i < N - 1; i++)
     {
-        int a,b;
-        cin>>a>>b;
-
-        if(a==ROOT)
-        {
-            tree[a].emplace_back(b);
-            inDegree[b]++;
-        }
-        else if(b==ROOT)
-        {
-            tree[b].emplace_back(a);
-            inDegree[a]++;
-        }
-        else if(inDegree[a]!=0)
-        {
-            tree[a].emplace_back(b);
-            inDegree[b]++;
-        }
-        else if(inDegree[b]!=0)
-        {
-            tree[b].emplace_back(a);
-            inDegree[a]++;
-        }
-        else q.push(make_pair(a,b));
-
-}
-    while(!q.empty())
-    {
-        int a = q.front().first;
-        int b = q.front().second;
-        q.pop();
-        if(a==ROOT)
-        {
-            tree[a].emplace_back(b);
-            inDegree[b]++;
-        }
-        else if(b==ROOT)
-        {
-            tree[b].emplace_back(a);
-            inDegree[a]++;
-        }
-        else if(inDegree[a]!=0)
-        {
-            tree[a].emplace_back(b);
-            inDegree[b]++;
-        }
-        else if(inDegree[b]!=0)
-        {
-            tree[b].emplace_back(a);
-            inDegree[a]++;
-        }
-        else q.push(make_pair(a,b));
-
+        int a, b;
+        cin >> a >> b;
+        tree[a].emplace_back(b);
+        tree[b].emplace_back(a);
     }
 
-    init();
-    traverse(ROOT);
-    RMQ segmentTree(segmentArray);
+    dfs(1, 0);
+    makeTable(N);
 
-    int M;
-    cin>>M;
-
-    for(int i=0;i<M;i++)
+    int Q;
+    cin >> Q;
+    while (Q--)
     {
-        int a,b;
-        cin>>a>>b;
+        int a, b;
+        cin >> a >> b;
 
-        int newa = convertToNewIndex[a];
-        int newb = convertToNewIndex[b];
-        int locnewa = locInTrip[newa];
-        int locnewb = locInTrip[newb];
-        if(locnewa>locnewb) swap(locnewa,locnewb);
-        int ans = segmentTree.query(locnewa,locnewb);
-        cout<<convertToOriginal[ans]<<'\n';
+
+        cout << lca(a, b) << '\n';
     }
 }
