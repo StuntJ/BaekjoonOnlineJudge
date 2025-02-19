@@ -154,13 +154,6 @@ int main()
     map<rt_data,int> mp;
     auto solve = [&](auto& solve, int n, pi R, pi B,vvc &grid) ->int
         {
-            /*for (int i = 0; i < N; i++)
-            {
-                for (int j = 0; j < M; j++)
-                    cout << grid[i][j];
-                cout << '\n';
-            }
-            cout << '\n';*/
             rt_data here;   
             here.B = B;
             here.R = R;
