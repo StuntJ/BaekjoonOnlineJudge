@@ -79,7 +79,5 @@ int main()
 
     st = matrixPower(st, D, DIV);
     ll total = st[0][0];
-    /*for (int i = 0; i < 8; i++)
-        total += st[i][0];*/
-    cout << total % DIV << '\n';
+    cout << total << '\n';
 }
