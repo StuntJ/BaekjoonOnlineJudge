@@ -52,13 +52,10 @@ int main()
     {
         ll t = K;
         int here = i+1;
-        for (int j = lim; j >= 0; j--)
+        for (int i = 0; t > 0; i++)
         {
-            if (t >= (1LL << j)) 
-            {
-                here = dp[j][here];
-                t -= (1LL << j);
-            }
+            if (t & 1) here = dp[i][here];
+            t >>= 1;
         }
         ans[here] = v[i];
     }
