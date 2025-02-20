@@ -41,6 +41,12 @@ int main()
 	vvpll dp(lim + 1, vpll(N + 1));
 	vi depth(N + 1);
 	vb visited(N + 1);
+	vll two(lim + 1);
+	for (int i = 0; i <= lim; i++)
+	{
+		if (i == 0) two[i] = 1;
+		else two[i] = two[i - 1] * 2;
+	}
 
 	for (int i = 0; i < N - 1; i++)
 	{
@@ -107,15 +113,6 @@ int main()
 			return total;
 		};
 
-	auto fastPow = [&](auto& fastPow, ll n, ll p)->ll
-		{
-			if (p == 0) return 1;
-			ll temp = fastPow(fastPow, n, p / 2);
-			ll ret = temp * temp;
-			if (p & 1) return ret * n;
-			return ret;
-		};
-
 	auto lca2 = [&](int a, int b, int k)
 		{
 			k--;
@@ -132,7 +129,7 @@ int main()
 			{
 				if (diff & 1)
 				{
-					upa += fastPow(fastPow,2, i);
+					upa += two[i];
 					a = dp[i][a].first;
 				}
 				diff >>= 1;
@@ -144,8 +141,8 @@ int main()
 				{
 					if (dp[i][a].first != dp[i][b].first)
 					{
-						upa += fastPow(fastPow, 2, i);
-						upb += fastPow(fastPow, 2, i);
+						upa += two[i];
+						upb += two[i];
 						a = dp[i][a].first;
 						b = dp[i][b].first;
 					}
