@@ -60,7 +60,7 @@ struct RMQ
         return query(left, right, 1, 0, n - 1);
     }
 
-    int update(int idx, int newVal , int node, int nodeLeft, int nodeRight)
+    int update(int idx, int newVal, int node, int nodeLeft, int nodeRight)
     {
         if (idx < nodeLeft || nodeRight < idx) return rangeMax[node];
         if (nodeLeft == nodeRight) return rangeMax[node] = newVal;
@@ -81,157 +81,97 @@ int main()
 
     int N;
     cin >> N;
-
-    const int lim = int(floor(log2(100000)));
     vvpi adj(N + 1);
-    vvi dp(lim + 1, vi(N + 1));
-    vi s(N + 1), e(N + 1), c(N + 1), toPcost(N + 1);
-    vi parent(N + 1), depth(N + 1), weight(N + 1);
-    vi where(N + 1), head(N + 1), ett(N + 1);
-
+    vi s(N + 1), e(N + 1), c(N + 1);
+    vi toPcost(N + 1);
+    vi weight(N + 1), depth(N + 1), head(N + 1), in(N + 1), parent(N + 1);
+    
     for (int i = 1; i < N; i++)
     {
         cin >> s[i] >> e[i] >> c[i];
 
-        adj[s[i]].emplace_back(make_pair(e[i],c[i]));
-        adj[e[i]].emplace_back(make_pair(s[i],c[i]));
+        adj[s[i]].emplace_back(make_pair(e[i], c[i]));
+        adj[e[i]].emplace_back(make_pair(s[i], c[i]));
     }
 
-    auto dfs = [&](auto& dfs, int here, int p = 0)->void
+    auto dfs1 = [&](auto& dfs1, int here, int p = 0)->void
         {
             weight[here] = 1;
             for (auto& i : adj[here])
             {
                 int next = i.first;
+                int cost = i.second;
+
                 if (next == p) continue;
-                dp[0][next] = here;
-                parent[next] = here;
+                toPcost[next] = cost;
                 depth[next] = depth[here] + 1;
-                toPcost[next] = i.second;
-                dfs(dfs, next, here);
+                parent[next] = here;
+                dfs1(dfs1, next, here);
                 weight[here] += weight[next];
+                if (weight[next] > weight[adj[here][0].first]) swap(i, adj[here][0]);
             }
         };
 
-    dfs(dfs,1, 0);
-
-    for (int i = 1; i <= lim; i++)
-        for (int j = 1; j <= N; j++)
-            dp[i][j] = dp[i - 1][dp[i - 1][j]];
-
-    int hldCounter, ettCounter;
-    where[1] = head[1] = ett[1] = hldCounter = ettCounter = 1;
-    auto hld = [&](auto& hld, int here, int p = 0)->void
+    int pv = 0;
+    auto dfs2 = [&](auto& dfs2, int here, int p = 0)->void
         {
-            sort(adj[here].begin(), adj[here].end(), [&](const pi& a, const pi& b)
-                {
-                    return weight[a.first] > weight[b.first];
-                });
-
-            int heavy = -1;
+            in[here] = ++pv;
             for (auto& i : adj[here])
             {
                 int next = i.first;
-                if (next==p) continue;
-                heavy = next;
-                where[next] = where[here];
-                ett[next] = ++ettCounter;
-                hld(hld, next, here);
-                break;
-            }
-
-            for (auto& i : adj[here])
-            {
-                int next = i.first;
-                if (next == p || next == heavy) continue;
-                where[next] = ++hldCounter;
-                head[hldCounter] = next;
-                ett[next] = ++ettCounter;
-                hld(hld, next, here);
+                if (next == p) continue;
+                head[next] = (next == (adj[here][0].first) ? head[here] : next);
+                dfs2(dfs2, next, here);
             }
         };
 
-    hld(hld, 1,0);
+    dfs1(dfs1, 1);
+    dfs2(dfs2, 1);
 
     vi v(N + 1);
     for (int i = 1; i <= N; i++)
-        v[ett[i]] = toPcost[i];
-    
-    auto lca = [&](int a, int b)
-        {
-            if (depth[a] < depth[b]) swap(a, b);
-            int diff = depth[a] - depth[b];
-            for (int i = 0; diff; i++)
-            {
-                if (diff & 1) a = dp[i][a];
-                diff >>= 1;
-            }
-
-            for (int i = lim; i >= 0; i--)
-            {
-                if (dp[i][a] != dp[i][b]) a = dp[i][a], b = dp[i][b];
-            }
-
-            if (a == b) return a;
-            return dp[0][a];
-        };
+        v[in[i]] = toPcost[i];
 
     RMQ seg(v);
 
-    auto update = [&](int idx, int newVal)
+    auto update = [&](int idx, int val)
         {
-            if (depth[s[idx]] > depth[e[idx]]) swap(s[idx], e[idx]);
-            seg.update(ett[e[idx]], newVal);
+            if (depth[s[idx]] < depth[e[idx]]) swap(s[idx], e[idx]);
+            seg.update(in[s[idx]], val);
         };
 
-    auto sub_query = [&](int s, int e)->int
+    auto query = [&](int u, int v) -> int
         {
             int ret = 0;
-            while (where[s] != where[e])
+            while (head[u] != head[v])
             {
-                int hs = head[where[s]], he = head[where[e]];
-                if (depth[hs] > depth[he])
-                {
-                    ret = max(ret, seg.query(ett[hs], ett[s]));
-                    s = parent[hs];
-                }
-                else
-                {
-                    ret = max(ret, seg.query(ett[he], ett[e]));
-                    e = parent[he];
-                }
+                if (depth[head[u]] < depth[head[v]]) swap(u,v);
+                int st = head[u];
+                ret = max(ret, seg.query(in[st], in[u]));
+                u = parent[st];
             }
-
-            if (depth[s] < depth[e]) swap(s, e);
-            ret = max(ret, seg.query(ett[e] + 1, ett[s]));
+            if (depth[u] > depth[v]) swap(u, v);
+            ret = max(ret, seg.query(in[u]+1, in[v]));
             return ret;
         };
 
-    auto query = [&](int u, int v)
-        {
-            int t = lca(u, v);
-            return max(sub_query(u, t), sub_query(v,t));
-        };
-    
-
     int Q;
     cin >> Q;
-
     while (Q--)
     {
         int q;
         cin >> q;
         if (q == 1)
         {
-            int idx, newVal;
-            cin >> idx >> newVal;
-            update(idx, newVal);
+            int idx, val;
+            cin >> idx >> val;
+            update(idx, val);
         }
-        else if (q == 2)
+        else
         {
-            int u, v;
-            cin >> u >> v;
-            cout << query(u, v) << '\n';
+            int a, b;
+            cin >> a >> b;
+            cout << query(a, b) << '\n';
         }
     }
 }
