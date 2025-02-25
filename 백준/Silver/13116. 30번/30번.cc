@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <unordered_set>
 
 using namespace std;
 
@@ -15,17 +14,17 @@ int main()
 		int A, B;
 		cin >> A >> B;
 
-		unordered_set<int> st;
+		vector<bool> st(1 << 10);
 		while (A > 0)
 		{
-			st.insert(A);
+			st[A] = true;
 			A >>= 1;
 		}
 
 		int ans = 0;
 		while (B > 0)
 		{
-			if (st.find(B) != st.end())
+			if (st[B])
 			{
 				ans = B;
 				break;
