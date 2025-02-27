@@ -2,20 +2,6 @@
 
 using namespace std;
 
-int solve(map<int, int>& mp)
-{
-	if (mp.empty()) return 0;
-	auto it = mp.begin();
-	int val = (*it).first * 2 - 1;
-	int cnt = 1;
-	while ((it = mp.upper_bound(val)) != mp.end())
-	{
-		cnt++;
-		val = (*it).first * 2 - 1;
-	}
-	return cnt;
-}
-
 int main()
 {
 	ios::sync_with_stdio(0);
@@ -23,29 +9,35 @@ int main()
 
 	int Q;
 	cin >> Q;
+
 	map<int, int> mp;
 	while (Q--)
 	{
-		int qu;
-		cin >> qu;
-		if (qu == 1)
+		int q;
+		cin >> q;
+		if (q == 1)
 		{
-			int cost;
-			cin >> cost;
-
-			if (mp.find(cost) == mp.end()) mp.insert(make_pair(cost, 1));
-			else mp[cost]++;
+			int p;
+			cin >> p;
+			mp[p]++;
 		}
-		else if (qu == 2)
+		else if (q == 2)
 		{
-			int cost;
-			cin >> cost;
-			if (mp.find(cost) == mp.end()) continue;
-			if (--mp[cost] == 0) mp.erase(cost);
+			int p;
+			cin >> p;
+			if (mp.find(p) != mp.end())
+				if (--mp[p] == 0) mp.erase(p);	
 		}
 		else
 		{
-			cout << solve(mp) << '\n';
+			auto it = mp.begin();
+			int cnt = 0;
+			while (it != mp.end())
+			{
+				it = mp.upper_bound((*it).first * 2-1);
+				cnt++;
+			}
+			cout << cnt << '\n';
 		}
 	}
 }
