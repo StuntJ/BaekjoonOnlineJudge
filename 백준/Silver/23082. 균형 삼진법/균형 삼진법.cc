@@ -1,13 +1,12 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-typedef long long ll;
 
-ll fastPow(ll n, ll p)
+int fastPow(int n, int p)
 {
-	if (p == 1) return 0;
-	ll temp = fastPow(n, p / 2);
-	ll ret = temp * temp;
+	if (p == 0) return 1;
+	int temp = fastPow(n, p / 2);
+	int ret = temp * temp;
 	if (p & 1) return ret * n;
 	return ret;
 }
@@ -17,7 +16,7 @@ int main()
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	ll N;
+	int N;
 	cin >> N;
 
 	if (N == 0)
@@ -26,39 +25,34 @@ int main()
 		return 0;
 	}
 
-	int rev;
-	if (N > 0) rev = 0;
-	else N = -N, rev = 1;
+	bool rev = false;
+	if (N < 0) rev = true, N *= -1;
+	int lim = (int)floor(log10(N) / log10(3));
+	vector<int> ans;
 
-	ll lim = (ll)floor(log10(N) / log10(3)) + 1;
-
-	vector<int> comp;
-
-	for (ll i = lim; i >= 0; i--)
+	for (int i = lim; i >= 0; i--)
 	{
-		ll bit = pow(3LL, i);
-		bool flag = false;
-		if (bit < N)
-		{
-			comp.push_back(1);
-			N -= bit;
-		}
-		else if (bit / 2 < N)
-		{
-			comp.push_back(1);
-			N = bit - N;
-			flag = true;
-		}
-		else if(!comp.empty())
-			comp.push_back(0);
-		if ((rev & 1)&&!comp.empty()) comp.back() *= -1;
-		if (flag) rev++;
+		int bit = fastPow(3, i);
+		ans.push_back(N / bit);
+		N %= bit;
 	}
 
-	for (auto i : comp)
+	reverse(ans.begin(), ans.end());
+	for (int i = 0; i < ans.size(); i++)
 	{
-		if (i == -1) cout << "T";
-		else if (i == 1) cout << i;
-		else cout << 0;
+		if (ans[i] >= 2) 
+		{
+			ans[i] -= 3;
+			if (i + 1 < ans.size()) ans[i + 1]++;
+			else ans.push_back(1);
+		}
+	}
+	reverse(ans.begin(), ans.end());
+	if (rev) for (auto& i : ans) i *= -1;
+
+	for (auto i : ans)
+	{
+		if (i == -1) cout << 'T';
+		else cout << i;
 	}
 }
