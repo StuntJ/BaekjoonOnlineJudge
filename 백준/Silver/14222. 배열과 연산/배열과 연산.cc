@@ -4,56 +4,43 @@ using namespace std;
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-    int N,K;
-    cin>>N>>K;
+    int N, K;
+    cin >> N >> K;
 
-    vector<int> arr;
-    vector<bool> chk(N+1,false);
-
-    for(int i=1;i<=N;i++)
+    vector<int> A(N);
+    unordered_map<int, int> mp;
+    for (auto& i : A)
     {
-        int num;
-        cin>>num;
-        if(num>N)
+        cin >> i;
+        if (i > N)
         {
-            cout<<false;
+            cout << 0;
             return 0;
         }
-        chk[num] = true;
-        arr.emplace_back(num);
+        mp[i]++;
     }
 
-    sort(arr.begin(),arr.end());
-
-    bool possible = true;
-
-    for(int i=1;i<N;i++)
+    for (auto& i : A)
     {
-        bool flag = false;
-        if(arr[i-1] == arr[i])
-            flag = true;
-
-        if(flag)
+        if (mp[i] >= 2)
         {
-            int number = arr[i];
-            while(number<=N)
+            mp[i]--;
+            while (mp[i] != 0)
             {
-                number+=K;
-                if(chk[number]==false) break;
+                i += K;
+            }
+            if (i > N)
+            {
+                cout << 0;
+                return 0;
             }
 
-            if(number>N)
-            {
-                possible = false;
-                break;
-            }
-            chk[number] = true;
+            mp[i]++;
         }
     }
 
-    cout<<possible;
+    cout << 1;
 }
