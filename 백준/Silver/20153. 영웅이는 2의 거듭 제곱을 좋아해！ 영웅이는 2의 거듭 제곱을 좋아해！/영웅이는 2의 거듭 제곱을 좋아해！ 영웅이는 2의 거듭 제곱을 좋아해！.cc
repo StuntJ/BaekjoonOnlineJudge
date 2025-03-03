@@ -4,28 +4,23 @@ using namespace std;
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
 	int N;
 	cin >> N;
 
-	int x = 0;
-	vector<int> num(N);
-	for (int i = 0; i < N; i++)
+	vector<int> A(N);
+	int xorRes = 0;
+	for (auto& i : A)
 	{
-		cin >> num[i];
-		x ^= num[i];
+		cin >> i;
+		xorRes ^= i;
 	}
 
-	int maximum = x;
-	for (int i = 0; i < N; i++)
-	{
-		maximum = max(maximum, num[i] ^ x);
-	}
+	int ans = xorRes;
+	for (auto i : A)
+		ans = max(ans, i ^ xorRes);
 
-	string str = to_string(maximum);
-
-	cout << str << str;
+	cout << ans << ans;
 }
