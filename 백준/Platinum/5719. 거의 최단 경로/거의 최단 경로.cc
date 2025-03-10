@@ -42,22 +42,33 @@ int main()
 		int S, D;
 		cin >> S >> D;
 
-		vvi adj(N, vi(N));
-		//vvb con(N, vb(N));
+		vvpi adj(N);
+		vvb con(N, vb(N));
 
 		for (int i = 0; i < M; i++)
 		{
 			int U, V, P;
 			cin >> U >> V >> P;
 
-			adj[U][V] = P;
+			adj[U].emplace_back(make_pair(P, V));
+			con[U][V] = true;
 		}
 
 		int ans = -1;
 		bool first = true;
 		vvi parent(N);
 		vb visited(N);
-
+		auto dfs = [&](auto& dfs, int here)->void
+			{
+				//cout << here << ' ';
+				visited[here] = true;
+				for (auto next : parent[here])
+				{
+					con[next][here] = false;
+					if (!visited[next] && next != S)
+						dfs(dfs, next);
+				}
+			};
 		while (true)
 		{
 			vi dist(N, INF);
@@ -74,13 +85,12 @@ int main()
 
 				if (hereDist > dist[here]) continue;
 
-				for (int i = 0; i < N; i++)
+				for (auto i : adj[here])
 				{
-					if (adj[here][i] == 0) continue;
-					int nextDist = hereDist + adj[here][i];
-					int next = i;
+					int nextDist = hereDist + i.first;
+					int next = i.second;
 
-					if (adj[here][next] && nextDist <= dist[next])
+					if (nextDist <= dist[next] && con[here][next])
 					{
 						if (nextDist != dist[next])
 						{
@@ -107,25 +117,8 @@ int main()
 
 
 			if (first)
-			{
-				queue<int> q;
-				visited[D] = true;
-				q.push(D);
-				while (!q.empty())
-				{
-					int here = q.front(); q.pop();
-
-					for (auto next : parent[here])
-					{
-						adj[next][here] = 0;
-						if (!visited[next])
-						{
-							visited[next] = true;
-							q.push(next);
-						}
-					}
-				}
-			}
+				dfs(dfs, D);
+			//cout << '\n';
 
 			if (dist[D] != ans && !first)
 			{
