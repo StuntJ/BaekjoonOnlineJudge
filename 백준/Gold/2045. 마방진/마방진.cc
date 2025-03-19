@@ -13,35 +13,6 @@ int main()
 		for (int j = 0; j < 3; j++)
 			cin >> v[i][j];
 
-	auto isMagic = [&]()
-		{
-			int stand = v[0][0] + v[0][1] + v[0][2];
-
-			for (int i = 0; i < 3; i++)
-			{
-				int sum = 0;
-				for (int j = 0; j < 3; j++)
-				{
-					sum += v[i][j];
-				}
-				if (sum != stand) return false;
-			}
-
-			for (int i = 0; i < 3; i++)
-			{
-				int sum = 0;
-				for (int j = 0; j < 3; j++)
-				{
-					sum += v[j][i];
-				}
-				if (sum != stand) return false;
-			}
-
-			if (v[0][0] + v[1][1] + v[2][2] == stand) return false;
-			if (v[0][2] + v[1][1] + v[2][0] == stand) return false;
-			return true;
-		};
-
 	auto print = [&]()
 		{
 			for (int i = 0; i < 3; i++)
