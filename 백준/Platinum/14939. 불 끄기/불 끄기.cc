@@ -19,8 +19,6 @@ int main()
 			if (x == 'O') v[i] |= k;
 		}
 	}
-	//for (int i = 0; i < N; i++) cout << bitset<10>(v[i]) << '\n';
-	
 
 	int ans = 987654321;
 	for (int i = 0; i < (1 << N); i++)
@@ -38,7 +36,7 @@ int main()
 				if (j < N - 1) cp[0] ^= (1 << (j + 1));
 			}
 		}
-		//if(i==0) cout << bitset<10>(cp[0]) << '\n';
+
 		for (int j = 1; j < N; j++)
 		{
 			for (int k = 0; k < N; k++)
@@ -52,11 +50,8 @@ int main()
 					if (k < N - 1) cp[j] ^= (1 << (k + 1));
 				}
 			}
-			if (j == N - 1)
-			{
-				if (cp[j] == 0) ans = min(ans, cnt);
-			}
-			//if(i==0) cout << bitset<10>(cp[j]) << '\n';
+			if (j == N - 1 && cp[j] == 0)
+				ans = min(ans, cnt);
 		}
 	}
 	cout << (ans == 987654321 ? -1 : ans);
