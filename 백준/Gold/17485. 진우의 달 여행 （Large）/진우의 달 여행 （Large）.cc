@@ -7,8 +7,10 @@ int n, m;
 vector <vector<int>> MAP(1002, vector<int>(1002, 0));
 vector <vector<vector<int>>> DP(1002, vector< vector<int> >(1002, vector<int>(3, INF)));
 
-int main() {
-
+int main() 
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
     cin >> n >> m;
     for (int i = 1; i <= n; i++) 
     {
