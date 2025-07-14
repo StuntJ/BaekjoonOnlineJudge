@@ -21,22 +21,15 @@ int main(){
     vector<ll> len;
     int prev = 0;
     for(int i=0;i<N;i++){
-        if(prev+1<vp[i].first){
-            len.push_back(vp[i].first-prev-1);
-        }
+        if(prev+1<vp[i].first) len.push_back(vp[i].first-prev-1);
         prev = max(prev,vp[i].second);
     }
-    if(prev<H){
-        len.push_back(H-prev);
-    }
+    if(prev<H) len.push_back(H-prev);
     sort(len.begin(),len.end());
     len.insert(len.begin(),0);
     vector<ll> pSum = len;
-    for(int i=1;i<pSum.size();i++){
-        pSum[i] += pSum[i-1];
-    }
-    /* for(auto i : len) cout<<i<<' ';
-    cout<<'\n'; */
+    for(int i=1;i<pSum.size();i++) pSum[i] += pSum[i-1];
+
     int Q;
     cin>>Q;
     int j = pSum.size()-1;
@@ -46,8 +39,6 @@ int main(){
 
         int i = lower_bound(len.begin(),len.end(),Ti)-len.begin();
         if(i>j) cout<<0<<'\n';
-        else
-            cout<<pSum[j]-pSum[i-1] - (j-i+1)*(Ti-1)<<'\n';
+        else cout<<pSum[j]-pSum[i-1] - (j-i+1)*(Ti-1)<<'\n';
     }
-
 }
