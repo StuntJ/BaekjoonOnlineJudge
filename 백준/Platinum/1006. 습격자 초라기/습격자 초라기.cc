@@ -69,31 +69,20 @@ int main()
             }
             else if(stat==1){
                 ret = min(ret,solve(solve,here+1,0,fstat)+1);
-                if(grid[0][here]+grid[0][(here+1)%N]<=W)
-                    ret = min(ret,solve(solve,here+1,2,fstat)+1);
+                if(grid[0][here]+grid[0][(here+1)%N]<=W) ret = min(ret,solve(solve,here+1,2,fstat)+1);
             }
             else{
                 ret = min(ret,solve(solve,here+1,0,fstat)+1);
-                if(grid[1][here]+grid[1][(here+1)%N]<=W){
-                    ret = min(ret,solve(solve,here+1,1,fstat)+1);
-                } 
-                    
+                if(grid[1][here]+grid[1][(here+1)%N]<=W) ret = min(ret,solve(solve,here+1,1,fstat)+1);
             }
             return ret;
         };
 
         ll ans = solve(solve,0,0,0);
-        //cout<<ans<<'\n';
         initDp();
         ans = min(ans,solve(solve,0,1,1));
-        /* for(ll i=0;i<3;i++){
-            for(ll j=0;j<N;j++)
-                cout<<dp[j][i]<< ' ';
-            cout<<'\n';
-        } */
         initDp();
         ans = min(ans,solve(solve,0,2,2));
-        //cout<<solve(solve,0,2,2)<<'\n';
         for(int i=0;i<2;i++){
             rotate(grid[i].begin(),grid[i].begin()+1,grid[i].end());
         }
