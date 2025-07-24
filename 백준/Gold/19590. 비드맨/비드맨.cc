@@ -36,7 +36,7 @@ int main()
     vector<int> v(N);
     for(auto &i : v) cin>>i;
     int x = *max_element(v.begin(),v.end());
-    ll sum = accumulate(v.begin(),v.end(),0LL)-x;
-    if(x>=sum) cout<<x-sum;
-    else cout<<(((sum-x)&1) ? 1 : 0);
+    ll sum = accumulate(v.begin(),v.end(),0LL);
+    if(x>=sum-x) cout<<x-sum+x;
+    else cout<<(((sum)&1) ? 1 : 0);
 }
