@@ -14,20 +14,15 @@ int main(){
     v.insert(v.begin(),0);
 
     ll sum = 0;
-    ll ans = -1;
+    ll ans = 0;
     for(int i=1;i<=N;i++){
         ll temp = 0;
-        for(int j=i;j<=N;j+=i){
-            temp += v[j];
-        }
+        for(int j=i;j<=N;j+=i) temp += v[j];
         if(temp>sum){
             sum = temp;
             ans = i;
         }
     }
-    if(ans==-1){
-        cout<<0<<' '<<0;
-        return 0;
-    }
+
     cout<<ans<<' '<<sum;
 }
