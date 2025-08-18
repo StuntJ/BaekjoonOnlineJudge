@@ -42,33 +42,18 @@ int main()
         int N;
         cin>>N;
 
+        int M = 0;
         for(int i=0;i<N;i++){
             int x,y;
             cin>>x>>y;
 
-            grid[x][y] += 1;
-            grid[x+11][y] += -1;
-            grid[x][y+11] += -1;
-            grid[x+11][y+11] += 1;
-        }
-
-        int M = 0;
-        for(int i=0;i<MAX_N;i++){
-            for(int j=1;j<MAX_N;j++){
-                grid[i][j] += grid[i][j-1];
+            for(int i=x;i<=x+10;i++){
+                for(int j=y;j<=y+10;j++){
+                    M = max(M,++grid[i][j]);
+                }
             }
         }
-
-        for(int j=0;j<MAX_N;j++){
-            for(int i=1;i<MAX_N;i++){
-                grid[i][j] += grid[i-1][j];
-            }
-        }
-        
-        for(int i=0;i<MAX_N;i++)
-            for(int j=0;j<MAX_N;j++)
-                M = max(M,grid[i][j]);
-        
+                
         cout<<M<<'\n';
     }
 }
