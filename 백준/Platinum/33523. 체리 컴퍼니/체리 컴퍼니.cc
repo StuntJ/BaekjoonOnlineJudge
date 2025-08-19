@@ -46,10 +46,8 @@ int main(){
 
     int N;
     cin>>N;
-    vector<int> v(N-1);
-    for(auto &i : v) cin>>i;
-    v.insert(v.begin(),0);
-    v.insert(v.begin(),0);
+    vector<int> v(N+1);
+    for(int i=2;i<=N;i++) cin>>v[i];
 
     int Q;
     cin>>Q;
