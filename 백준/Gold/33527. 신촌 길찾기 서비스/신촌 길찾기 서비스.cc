@@ -34,12 +34,6 @@ int main(){
             for(int j=1;j<=5*X;j++)
                 adj[i][j] = min(adj[i][j],adj[i][k]+adj[k][j]);
     
-    /* for(int i=1;i<=5*X;i++){
-        for(int j=1;j<=5*X;j++){
-            cout<<(adj[i][j]==INF ? -1 : adj[i][j])<<' ';
-        }
-        cout<<'\n';
-    }  */
     int Q;
     cin>>Q;
     while(Q--){
