@@ -49,12 +49,6 @@ int main(){
 
     cout<<dfs(dfs,-1,1,1)<<'\n';
 
-    /* for(int i=0;i<N;i++){
-        for(int j=0;j<2;j++){
-            cout<<dp[i][j]<<' ';
-        }
-        cout<<'\n';
-    } */
     vector<int> ans;
     auto backtrack = [&](auto &backtrack,int parent, int here, bool can)->void{
         if(can==0){
