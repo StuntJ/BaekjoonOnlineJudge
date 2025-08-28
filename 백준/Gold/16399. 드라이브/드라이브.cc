@@ -84,12 +84,6 @@ int main()
         }
     }
 
-    /* for(int i=0;i<lim;i++){
-        for(int j=0;j<=C;j++)
-            cout<<(dp[i][j]==INF ? -1 : dp[i][j])<<' ';
-        cout<<'\n';
-    } */
-
     ll ans = INF;
     for(int i=0;i<=C;i++) ans = min(ans,dp[lim-1][i]);
     if(ans==INF) cout<<-1;
