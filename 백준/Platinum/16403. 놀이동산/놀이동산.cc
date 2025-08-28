@@ -25,18 +25,11 @@ int main(){
         dp[i] = min(dp[i],dp[i-1]+A*v[i]);
         for(int j=i;j<=min(N,(i+39));j++){
             int mid = (i+j)/2;
-            //if((v[j]-v[mid])*A>B || (v[mid]-v[i])*A>B) break;
             ll res = 0;
             if((j-i+1)&1) res+=v[mid];
             res += -(pSum[mid]-pSum[i-1]) + (pSum[j]-pSum[mid]);
             dp[j] = min(dp[j],dp[i-1]+res*A+B); 
         }
     }
-    /* for(int i=0;i<=N;i++) cout<<v[i]<<' ';
-    cout<<'\n';
-    for(int i=0;i<=N;i++) cout<<pSum[i]<<' ';
-    cout<<'\n';
-    for(int i=0;i<=N;i++) cout<<dp[i]<<' ';
-    cout<<'\n'; */
     cout<<dp[N];
 }
