@@ -39,7 +39,6 @@ int main()
         int x;
         cin>>x;
 
-        adj[i].emplace_back(x);
         adj[x].emplace_back(i);
     }
     vll v(N);
@@ -49,16 +48,11 @@ int main()
     vvll dp(N+1,vll(2));
 
     const ll INF = 2000000000;
-    auto solve = [&](auto &solve, int here, int parent)->void{
-        for(int next : adj[here]){
-            if(parent==next) continue; 
-            solve(solve,next,here);
-        }
-
+    auto solve = [&](auto &solve, int here)->void{
+        for(int next : adj[here]) solve(solve,next);
         int mxidx = -1;
         ll bp = -INF;
         for(int next : adj[here]){
-            if(parent==next) continue;
             dp[here][0] += max(dp[next][0],dp[next][1]);
             ll temp = v[here]*v[next]+dp[next][0]-max(dp[next][0],dp[next][1]);
             if(temp>bp){
@@ -67,13 +61,10 @@ int main()
             }
         }
 
-        for(int next : adj[here]){
-            if(parent==next) continue;
-            dp[here][1] += max(dp[next][0], dp[next][1]);
-        }
+        for(int next : adj[here]) dp[here][1] += max(dp[next][0], dp[next][1]);
         dp[here][1] += bp;
     };
 
-    solve(solve,1,-1);
+    solve(solve,1);
     cout<<max(dp[1][0],dp[1][1]);
 }
