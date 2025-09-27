@@ -44,12 +44,8 @@ int main()
 
     for(int i=1;i<=N;i++){
         for(int j=1;j<=M;j++){
-            if(i>=2 && j>=2){
-                grid[i][j] += min(grid[i-1][j],grid[i][j-1]);
-            }
-            else if(i>=2){
-                grid[i][j] += grid[i-1][j];
-            }
+            if(i>=2 && j>=2) grid[i][j] += min(grid[i-1][j],grid[i][j-1]);
+            else if(i>=2) grid[i][j] += grid[i-1][j];
             else if(j>=2) grid[i][j] += grid[i][j-1];
         }
     }
@@ -61,11 +57,4 @@ int main()
         cout<<"YES\n";
         cout<<grid[N][M];
     }
-
-    /* cout<<'\n';
-    for(int i=1;i<=N;i++){
-        for(int j=1;j<=M;j++)
-            cout<<grid[i][j]<<' ';
-        cout<<'\n';
-    } */
 }
