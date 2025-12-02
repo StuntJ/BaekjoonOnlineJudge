@@ -12,8 +12,8 @@ int main(){
         int N,M,k,D;
         cin>>N>>M>>k>>D;
 
-        int B = D/(M*M*(N-1)+M*(M-1)*k);
+        int B = D/(M*M*N*(N-1)/2+N*M*(M-1)/2*k);
         if(B<1) cout<<-1<<'\n';
-        else cout<<(M*M*(N-1)+M*(M-1)*k)*B<<'\n';
+        else cout<<(M*M*N*(N-1)/2+N*M*(M-1)/2*k)*B<<'\n';
     }
 }
