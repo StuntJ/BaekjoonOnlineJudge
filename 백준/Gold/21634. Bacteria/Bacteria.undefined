@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+
+int fpow(int n, int p){
+    if(p==0) return 1;
+    int temp = fpow(n,p/2);
+    int ret = temp*temp;
+    if(p&1) return ret*n;
+    return ret;
+}
+
+void solve(){
+    int N;
+    cin>>N;
+
+    int k = 0;
+    while(fpow(2,k)+k<=N) k++;
+    k--;
+
+    int len = fpow(2,k);
+    int lim = fpow(2,len);
+    int totNum = fpow(2,N);
+    int totNumOrg = totNum;
+
+    string ans;
+    unordered_set<string> mp;
+
+    string bp;
+    for(int i=0;i<lim;i++){
+        string str = bitset<32>(i).to_string().substr(32-len);
+        bp += str;
+        if(i&1){
+            mp.insert(bp);
+            //cout<<bp<<'\n';
+            bp.clear();
+        } 
+        ans += str;
+    }
+
+    totNum-=lim*len;
+
+    len *= 2;
+    int p = 0;
+    while(totNum>0){
+        string str = bitset<32>(p).to_string().substr(32-len);
+        if(mp.contains(str)){
+            p++;
+            continue;
+        }
+        ans += str;
+        totNum-=len;    
+        p++;
+    }
+    cout<<ans.substr(0,totNumOrg)<<'\n';
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
+    int t = 1;
+    //cin>>t;
+
+    while(t--){
+        solve();
+    }
+}
