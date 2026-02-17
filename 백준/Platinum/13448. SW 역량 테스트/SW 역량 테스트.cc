@@ -16,17 +16,16 @@ void solve(){
         return a[1]*b[2] > b[1]*a[2];
     });
 
-    vector<vector<ll>> dp(N+1,vector<ll>(T+1));
+    vector<ll> dp(T+1);
     for(int i=0;i<N;i++){
-        for(int j=0;j<=T;j++){
-            dp[i+1][j] = max(dp[i+1][j],dp[i][j]);
+        for(int j=T;j>=0;j--){
             if(j+v[i][2]<=T){
-                dp[i+1][j+v[i][2]] = max(dp[i+1][j+v[i][2]],dp[i][j]+v[i][0]-(j+v[i][2])*v[i][1]);
+                dp[j+v[i][2]] = max(dp[j+v[i][2]],dp[j]+v[i][0]-(j+v[i][2])*v[i][1]);
             }
         }
     }
     
-    cout<<*max_element(dp[N].begin(),dp[N].end());
+    cout<<*max_element(dp.begin(),dp.end());
 }
 
 int main(){
