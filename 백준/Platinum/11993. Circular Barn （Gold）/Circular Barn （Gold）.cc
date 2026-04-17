@@ -23,25 +23,19 @@ void solve() {
         int oridx = idx;
         for (idx = oridx; idx<oridx+v[i];idx++) {
             if (!chk[idx%N]) chk[idx%N] = true;
-            else {
-                flag = true;
-            }
-            if (flag)
-                break;
+            else flag = true;
+            if (flag) break;
         }
-
         if (flag) break;
     }
 
     ll sum = 0;
     idx = st;
-    //cout<<st<<'\n';
     int orp = st;
     for (int p = st; p<orp+N; p++) {
         int oridx = idx;
-        for (idx = oridx ; idx<oridx+v[p%N];idx++) {
+        for (idx = oridx ; idx<oridx+v[p%N];idx++)
             sum += (ll)(idx-p)*(idx-p);
-        }
     }
 
     cout<<sum;
