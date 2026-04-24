@@ -41,24 +41,13 @@ void solve(){
         }
     }
     
-    // for(int i=0;i<M;i++){
-    //     cout<<table[0][1][i]<< ' ';
-    // }
-    // cout<<'\n';
-    
-    
     int mnSee = 1e9;;
     for(int k=0;k<M;k++){
         int mxSee = 0;
         for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                //if(k==1) cout<<table[i][j][k]<<'\n';
-                //cout<<table[i][j][k]<<'\n';
-                mxSee = max(table[i][j][k]+1,mxSee);
-            }
+            for(int j=0;j<N;j++) mxSee = max(table[i][j][k]+1,mxSee);
         }
         mnSee = min(mnSee,mxSee);
-        //cout<<mxSee<<'\n';
     }
     
     cout<<mnSee;
